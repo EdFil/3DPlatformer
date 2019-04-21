@@ -1617,9 +1617,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 526c5c62e5ceb6643b7545fcfce682d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pivot: {fileID: 963194228}
   _moveSpeed: 8
-  _jumpForce: 5
-  _gravityScale: 1
+  _jumpForce: 12
+  _gravityScale: 3
 --- !u!143 &1293248433
 CharacterController:
   m_ObjectHideFlags: 0
