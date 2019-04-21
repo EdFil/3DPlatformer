@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
 		bool isJumpPressed = Input.GetAxisRaw("Jump") > 0.0f;
 
 		Vector3 movementDirection = GetMovementDirection(horizontalAxis, verticalAxis);
+		Debug.DrawLine(transform.position, transform.position + movementDirection * 5.0f, Color.black);
 
 		// Update player motion
 		_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
