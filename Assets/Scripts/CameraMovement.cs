@@ -31,7 +31,7 @@ public class CameraMovement : MonoBehaviour
 		float scrollAxis = Input.GetAxis("Mouse ScrollWheel") * _rotateSpeed;
 
 		_currentRotation.x += horizontalAxis;
-		_currentRotation.y += verticalAxis;
+		_currentRotation.y = Mathf.Clamp(_currentRotation.y + verticalAxis, 0.0f, 80.0f);
 		_currentDistance += scrollAxis;
 
 		Vector3 lookDirection = _target.forward;
@@ -40,10 +40,6 @@ public class CameraMovement : MonoBehaviour
 		lookDirection = xRotation * yRotation * lookDirection;
 
 		transform.position = _target.position + lookDirection * _currentDistance;
-		if (transform.position.y < _target.position.y) {
-			transform.position = new Vector3(transform.position.x, _target.position.y, transform.position.z);
-		}
-
 		transform.LookAt(_target);
 	}
 
