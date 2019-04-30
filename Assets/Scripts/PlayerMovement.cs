@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 	public float _jumpForce = 1.0f;
 	public float _gravityScale = 1.0f;
 
-	private Vector3 _currentMoveDirection;
+	private Vector3 _playerDirection;
 	private CharacterController _characterController;
 	private Vector3 _playerMotion = Vector3.zero;
 
@@ -29,24 +29,27 @@ public class PlayerMovement : MonoBehaviour
 		bool isJumpPressed = Input.GetAxisRaw("Jump") > 0.0f;
 
 		Vector3 movementDirection = GetMovementDirection(horizontalAxis, verticalAxis);
-		Debug.DrawLine(transform.position, transform.position + movementDirection * 5.0f, Color.black);
+
+
+		Debug.Log("MD(" + movementDirection.x + ", " + movementDirection.y + ", " + movementDirection.z + ") For(" + transform.forward.x + ", " + transform.forward.y + ", " + transform.forward.z + ")");
+		transform.localRotation = Quaternion.FromToRotation(transform.forward, movementDirection);
 
 		// Update player motion
-		_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
+		//_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
 
-		if (_characterController.isGrounded)
-		{
-			if (isJumpPressed)
-				_playerMotion.y = _jumpForce;
-			else
-				_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime;
-		}
-		else
-		{
-			_playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
-		}
+		//if (_characterController.isGrounded)
+		//{
+		//	if (isJumpPressed)
+		//		_playerMotion.y = _jumpForce;
+		//	else
+		//		_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime;
+		//}
+		//else
+		//{
+		//	_playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
+		//}
 
-		_characterController.Move(_playerMotion * Time.deltaTime);
+		//_characterController.Move(transform.forward * Time.deltaTime);
 	}
 
 	private Vector3 GetMovementDirection(float horizontalAxis, float verticalAxis)
