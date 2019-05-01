@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 	public float _moveSpeed = 1.0f;
 	public float _jumpForce = 1.0f;
 	public float _gravityScale = 1.0f;
+	public float _rotationSpeed;
 
 	private Vector3 _playerDirection;
 	private CharacterController _characterController;
@@ -30,26 +31,29 @@ public class PlayerMovement : MonoBehaviour
 
 		Vector3 movementDirection = GetMovementDirection(horizontalAxis, verticalAxis);
 
-
-		Debug.Log("MD(" + movementDirection.x + ", " + movementDirection.y + ", " + movementDirection.z + ") For(" + transform.forward.x + ", " + transform.forward.y + ", " + transform.forward.z + ")");
-		transform.localRotation = Quaternion.FromToRotation(transform.forward, movementDirection);
+		Debug.DrawLine(transform.position, transform.position + movementDirection * 10, Color.red, 0.2f);
+		Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.black, 0.2f);
 
 		// Update player motion
-		//_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
+		_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
 
-		//if (_characterController.isGrounded)
-		//{
-		//	if (isJumpPressed)
-		//		_playerMotion.y = _jumpForce;
-		//	else
-		//		_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime;
-		//}
-		//else
-		//{
-		//	_playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
-		//}
+		if (movementDirection != Vector3.zero) {
+			transform.forward = movementDirection;
+		}
 
-		//_characterController.Move(transform.forward * Time.deltaTime);
+		if (_characterController.isGrounded)
+		{
+			if (isJumpPressed)
+				_playerMotion.y = _jumpForce;
+			else
+				_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime;
+		}
+		else
+		{
+			_playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
+		}
+
+		_characterController.Move(_playerMotion * Time.deltaTime);
 	}
 
 	private Vector3 GetMovementDirection(float horizontalAxis, float verticalAxis)

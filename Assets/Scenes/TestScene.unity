@@ -2085,10 +2085,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1476878751}
-  _rotation: 30
-  _padding: {x: 0, y: 0, z: 6}
-  _defaultRotation: {x: 30, y: 0}
   _defaultDistance: 7
+  _defaultRotation: {x: 0, y: 20}
   _rotateSpeed: 1.5
   _isXAxisInverted: 0
   _isYAxisInverted: 0

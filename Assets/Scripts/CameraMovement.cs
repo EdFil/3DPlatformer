@@ -5,16 +5,12 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
 	public Transform _target;
-	public float _rotation = 30.0f;
-	public Vector3 _padding = new Vector3(0.0f, 0.0f, 6.0f);
-
-	public Vector2 _defaultRotation = new Vector2(0.0f, 30.0f);
-	public float _defaultDistance = -7.0f;
+	public float _defaultDistance = 7.0f;
+	public Vector2 _defaultRotation = new Vector2(0.0f, 20.0f);
 	public float _rotateSpeed = 1;
 	public bool _isXAxisInverted = false;
 	public bool _isYAxisInverted = false;
 
-	private LayerMask _raycastLayerMask;
 	private Vector2 _currentRotation;
 	private float _currentDistance;
 
@@ -23,8 +19,6 @@ public class CameraMovement : MonoBehaviour
     {
 		Cursor.lockState = CursorLockMode.Locked;
 		ResetCamera();
-
-		_raycastLayerMask = ~(1 << LayerMask.NameToLayer("Player"));
 	}
 
     // Update is called once per frame
@@ -44,20 +38,17 @@ public class CameraMovement : MonoBehaviour
 
 
 		Vector3 lookDirection = Quaternion.Euler(_currentRotation.x, _currentRotation.y, 0.0f) * Vector3.forward;
-
-		//RaycastHit raycastHit;
-		float cameraDistance = _padding.z;
-		//if (Physics.Raycast(_target.transform.position, -lookDirection, out raycastHit, Mathf.Infinity, _raycastLayerMask)) {
-		//	cameraDistance = Mathf.Min(cameraDistance, raycastHit.distance);
-		//}
-
-		transform.position = _target.position - lookDirection * cameraDistance;
+		transform.position = _target.position - lookDirection * _currentDistance;
 		transform.LookAt(_target);
+
+		Debug.DrawLine(_target.position, _target.position - lookDirection * _currentDistance, Color.blue, 0.2f);
+		//Debug.Log(string.Format("CurrentRotation[{0}, {1}]", _currentRotation.x, _currentRotation.y));
+		
 	}
 
 	private void ResetCamera()
 	{
-		_currentRotation.Set(0.0f, _rotation);
-		_currentDistance = _padding.z;
+		_currentRotation.Set(_defaultRotation.y, Vector3.Angle(_target.forward, Vector3.forward));
+		_currentDistance = _defaultDistance;
 	}
 }
