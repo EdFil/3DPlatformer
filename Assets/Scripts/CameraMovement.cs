@@ -36,14 +36,9 @@ public class CameraMovement : MonoBehaviour
 		_currentRotation.y -= horizontalAxis;
 		_currentDistance += scrollAxis;
 
-
 		Vector3 lookDirection = Quaternion.Euler(_currentRotation.x, _currentRotation.y, 0.0f) * Vector3.forward;
 		transform.position = _target.position - lookDirection * _currentDistance;
 		transform.LookAt(_target);
-
-		Debug.DrawLine(_target.position, _target.position - lookDirection * _currentDistance, Color.blue, 0.2f);
-		//Debug.Log(string.Format("CurrentRotation[{0}, {1}]", _currentRotation.x, _currentRotation.y));
-		
 	}
 
 	private void ResetCamera()
