@@ -13,6 +13,7 @@ public class CameraMovement : MonoBehaviour
 
 	private Vector2 _currentRotation;
 	private float _currentDistance;
+	public LayerMask _layerMask;
 
 	// Start is called before the first frame update
 	void Start()
@@ -37,7 +38,14 @@ public class CameraMovement : MonoBehaviour
 		_currentDistance += scrollAxis;
 
 		Vector3 lookDirection = Quaternion.Euler(_currentRotation.x, _currentRotation.y, 0.0f) * Vector3.forward;
-		transform.position = _target.position - lookDirection * _currentDistance;
+		float distanceForCamera = _currentDistance;		
+		
+		RaycastHit hitInfo;
+		if (Physics.Raycast(_target.position, -lookDirection, out hitInfo, _currentDistance, _layerMask)) {
+			distanceForCamera = hitInfo.distance;
+		}
+
+		transform.position = _target.position - lookDirection * distanceForCamera;
 		transform.LookAt(_target);
 	}
 
