@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	public Transform _pivot;
+    Transform _cameraTransform;
+
+    public Transform _pivot;
 	public float _moveSpeed = 1.0f;
 	public float _jumpForce = 1.0f;
 	public float _gravityScale = 1.0f;
@@ -18,7 +20,8 @@ public class PlayerMovement : MonoBehaviour
 	void Start()
     {
 		_characterController = GetComponent<CharacterController>();
-	}
+        _cameraTransform = Camera.main.transform;
+    }
 
 
 	// Update is called once per frame
@@ -29,34 +32,37 @@ public class PlayerMovement : MonoBehaviour
 		float verticalAxis = Input.GetAxisRaw("Vertical");
 		bool isJumpPressed = Input.GetAxisRaw("Jump") > 0.0f;
 
-		Vector3 movementDirection = GetMovementDirection(horizontalAxis, verticalAxis);
+        //Debug.DrawLine(cameraTransform.position, cameraTransform.position + cameraTransform.forward * 10, Color.green, 0.5f);
 
-		Debug.DrawLine(transform.position, transform.position + movementDirection * 10, Color.red, 0.2f);
-		Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.black, 0.2f);
+        Vector3 inputDirection = new Vector3(horizontalAxis, 0, verticalAxis);
 
-		// Update player motion
-		_playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
+        if (inputDirection != Vector3.zero)
+        {
+            transform.forward = new Vector3(_cameraTransform.forward.x, 0, _cameraTransform.forward.z);
+        }
 
-		if (movementDirection != Vector3.zero) {
-			transform.forward = movementDirection;
-		}
+        inputDirection = transform.TransformDirection(inputDirection * _moveSpeed);
+ 
+        // Update player motion
+        _playerMotion.Set(inputDirection.x, _playerMotion.y, inputDirection.z);
 
-		if (_characterController.isGrounded)
+        if (_characterController.isGrounded)
 		{
 			if (isJumpPressed)
 				_playerMotion.y = _jumpForce;
 			else
-				_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime;
+				_playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime * _moveSpeed;
 		}
 		else
 		{
 			_playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
 		}
 
-		_characterController.Move(_playerMotion * Time.deltaTime);
-	}
+        _characterController.Move(_playerMotion * Time.deltaTime);
 
-	private Vector3 GetMovementDirection(float horizontalAxis, float verticalAxis)
+    }
+
+	/*private Vector3 GetMovementDirection(float horizontalAxis, float verticalAxis)
 	{
 		if (horizontalAxis == 0.0f && verticalAxis == 0.0f)
 			return Vector3.zero;
@@ -70,5 +76,5 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		return (Quaternion.Euler(0.0f, angle, 0.0f) * Vector3.ProjectOnPlane(_pivot.forward, Vector3.up)).normalized;
-	}
+	}*/
 }
