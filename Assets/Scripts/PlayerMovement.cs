@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -85,7 +86,9 @@ public class PlayerMovement : MonoBehaviour
             transform.forward = new Vector3(_cameraTransform.forward.x, 0, _cameraTransform.forward.z);
         }
 
-        inputDirection = transform.TransformDirection(inputDirection * _moveSpeed);
+        inputDirection = fastNormalize(inputDirection);
+
+        inputDirection = transform.TransformDirection(inputDirection);
 
         if (inputDirection != Vector3.zero && !isAiming)
         {
@@ -93,6 +96,28 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Update player motion
-        _playerMotion.Set(inputDirection.x, _playerMotion.y, inputDirection.z);
+        _playerMotion.Set(inputDirection.x * _moveSpeed, _playerMotion.y, inputDirection.z * _moveSpeed);
+    }
+
+    private void TestFastNormalize() {
+        Vector2 test1 = new Vector2(2324, 454);
+        Vector2 test_fastN1 = fastNormalize(test1);
+        Vector2 test_slowN1 = test1.normalized;
+    }
+
+    Vector3 fastNormalize(Vector3 vec) {
+        float mag = 1/(InvSqrt(Mathf.Pow(vec.x, 2) + Mathf.Pow(vec.y, 2) + Mathf.Pow(vec.z, 2)));
+
+        return vec / mag;
+    }
+
+    float InvSqrt(float x)
+    {
+        float xhalf = 0.5f * x;
+        int i = BitConverter.ToInt32(BitConverter.GetBytes(x), 0);
+        i = 0x5f3759df - (i >> 1); 
+        x = BitConverter.ToSingle(BitConverter.GetBytes(i), 0);
+        x = x * (1.5f - xhalf * x * x); 
+        return x;
     }
 }
