@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Update direction
         Vector3 movementDirection = GetMovementDirection(horizontalAxis, verticalAxis);
+
         if (movementDirection != Vector3.zero) {
             transform.forward = movementDirection;
         }
@@ -48,7 +49,8 @@ public class PlayerMovement : MonoBehaviour
             return Vector3.zero;
 
         // Calculate rotation angle based on Axis input
-        float angle = Vector2.SignedAngle(new Vector2(0.0f, 1.0f), new Vector2(-horizontalAxis, verticalAxis));
+        //float angle = Vector2.SignedAngle(new Vector2(0.0f, 1.0f), new Vector2(-horizontalAxis, verticalAxis));
+        float angle = Mathf.Atan2(horizontalAxis, verticalAxis) * Mathf.Rad2Deg;
         UnityEngine.Debug.Log(angle);
 
         // Convert angle to direction based on pivot
