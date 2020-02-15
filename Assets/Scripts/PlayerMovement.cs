@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Diagnostics;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController _characterController;
     private Vector3 _playerMotion = Vector3.zero;
 
-    void Start() {
+    void Awake() {
         _characterController = GetComponent<CharacterController>();
     }
 
@@ -30,11 +31,12 @@ public class PlayerMovement : MonoBehaviour
 
         // Update motion
         _playerMotion.Set(movementDirection.x * _moveSpeed, _playerMotion.y, movementDirection.z * _moveSpeed);
+
         if (_characterController.isGrounded) {
             if (isJumpPressed)
                 _playerMotion.y = _jumpForce;
             else
-                _playerMotion.y = Physics.gravity.y * _gravityScale * Time.deltaTime * _moveSpeed;
+                _playerMotion.y = Physics.gravity.y * _gravityScale * _moveSpeed * Time.deltaTime;
         } else {
             _playerMotion.y += Physics.gravity.y * _gravityScale * Time.deltaTime;
         }
@@ -46,13 +48,11 @@ public class PlayerMovement : MonoBehaviour
             return Vector3.zero;
 
         // Calculate rotation angle based on Axis input
-        float angle = 0.0f;
-        if (horizontalAxis != 0.0f && verticalAxis != 0.0f) {
-            angle = 45.0f * horizontalAxis + (verticalAxis < 0.0f ? 90.0f * horizontalAxis : 0.0f);
-        } else {
-            angle = 90.0f * horizontalAxis + (verticalAxis < 0.0f ? 180.0f : 0.0f);
-        }
+        float angle = Vector2.SignedAngle(new Vector2(0.0f, 1.0f), new Vector2(-horizontalAxis, verticalAxis));
+        UnityEngine.Debug.Log(angle);
 
+        // Convert angle to direction based on pivot
         return Quaternion.Euler(0.0f, angle, 0.0f) * Vector3.ProjectOnPlane(_pivot.forward, Vector3.up);
     }
+
 }
